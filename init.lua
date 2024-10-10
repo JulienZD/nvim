@@ -721,6 +721,8 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'prettierd', 'prettier', stop_after_first = true },
+        htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1022,11 +1024,25 @@ require('lazy').setup({
   {
     'joeveiga/ng.nvim',
     config = function()
-      local opts = { noremap = true, silent = true }
       local ng = require 'ng'
-      vim.keymap.set('n', '<leader>at', ng.goto_template_for_component, opts)
-      vim.keymap.set('n', '<leader>ac', ng.goto_component_with_template_file, opts)
-      vim.keymap.set('n', '<leader>aT', ng.get_template_tcb, opts)
+      vim.keymap.set('n', '<leader>at', ng.goto_template_for_component, { noremap = true, silent = true, desc = 'Go to [A]ngular [T]emplate' })
+      vim.keymap.set('n', '<leader>ac', ng.goto_component_with_template_file, { noremap = true, silent = true, desc = 'Go to [A]ngular [C]omponent' })
+    end,
+  },
+  {
+    'dlvandenberg/tree-sitter-angular',
+    config = function()
+      vim.filetype.add {
+        pattern = {
+          ['.*%.component%.html'] = 'htmlangular',
+        },
+      }
+
+      vim.cmd 'runtime! ftplugin/html.vim!'
+
+      require('lspconfig').angularls.setup {
+        filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
+      }
     end,
   },
 }, {
