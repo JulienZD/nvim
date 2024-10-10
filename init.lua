@@ -175,12 +175,6 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -189,6 +183,12 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Center the cursor line after jumping
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
+vim.keymap.set('n', 'n', 'nzz', { noremap = true })
+vim.keymap.set('n', 'N', 'Nzz', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -202,6 +202,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+-- Auto-save files
+vim.api.nvim_create_autocmd({ 'FocusLost', 'ModeChanged', 'TextChanged', 'BufEnter' }, {
+  desc = 'autosave',
+  pattern = '*',
+  command = 'silent! update',
 })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
@@ -546,7 +553,7 @@ require('lazy').setup({
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          -- map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -713,6 +720,7 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -873,6 +881,11 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
+      -- Minimap
+      require('mini.map').setup()
+      -- Don't open the minimap by default, as my current icons are broken (maybe use nerdfix? or a different font entirely)
+      -- MiniMap.Open()
+
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
@@ -945,51 +958,76 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
   },
-  {
-    'karb94/neoscroll.nvim',
-    config = function()
-      local neoscroll = require 'neoscroll'
-
-      local keymap = {
-        ['<C-u>'] = function()
-          neoscroll.ctrl_u { duration = 150 }
-        end,
-        ['<C-d>'] = function()
-          neoscroll.ctrl_d { duration = 150 }
-        end,
-        ['<C-b>'] = function()
-          neoscroll.ctrl_b { duration = 450 }
-        end,
-        ['<C-f>'] = function()
-          neoscroll.ctrl_f { duration = 450 }
-        end,
-        ['<C-y>'] = function()
-          neoscroll.scroll(-0.1, { move_cursor = false, duration = 100 })
-        end,
-        ['<C-e>'] = function()
-          neoscroll.scroll(0.1, { move_cursor = false, duration = 100 })
-        end,
-        ['zt'] = function()
-          neoscroll.zt { half_win_duration = 250 }
-        end,
-        ['zz'] = function()
-          neoscroll.zz { half_win_duration = 250 }
-        end,
-        ['zb'] = function()
-          neoscroll.zb { half_win_duration = 250 }
-        end,
-      }
-      local modes = { 'n', 'v', 'x' }
-      for key, func in pairs(keymap) do
-        vim.keymap.set(modes, key, func)
-      end
-    end,
-  },
+  -- {
+  --   'karb94/neoscroll.nvim',
+  --   config = function()
+  --     local neoscroll = require 'neoscroll'
+  --
+  --     local keymap = {
+  --       ['<C-u>'] = function()
+  --         neoscroll.ctrl_u { duration = 150 }
+  --       end,
+  --       ['<C-d>'] = function()
+  --         neoscroll.ctrl_d { duration = 150 }
+  --       end,
+  --       ['<C-b>'] = function()
+  --         neoscroll.ctrl_b { duration = 450 }
+  --       end,
+  --       ['<C-f>'] = function()
+  --         neoscroll.ctrl_f { duration = 450 }
+  --       end,
+  --       ['<C-y>'] = function()
+  --         neoscroll.scroll(-0.1, { move_cursor = false, duration = 100 })
+  --       end,
+  --       ['<C-e>'] = function()
+  --         neoscroll.scroll(0.1, { move_cursor = false, duration = 100 })
+  --       end,
+  --       ['zt'] = function()
+  --         neoscroll.zt { half_win_duration = 250 }
+  --       end,
+  --       ['zz'] = function()
+  --         neoscroll.zz { half_win_duration = 250 }
+  --       end,
+  --       ['zb'] = function()
+  --         neoscroll.zb { half_win_duration = 250 }
+  --       end,
+  --     }
+  --     local modes = { 'n', 'v', 'x' }
+  --     for key, func in pairs(keymap) do
+  --       vim.keymap.set(modes, key, func)
+  --     end
+  --   end,
+  -- },
   {
     'axelvc/template-string.nvim',
     opts = {
       remove_template_string = true,
     },
+  },
+  {
+    'christoomey/vim-tmux-navigator',
+    lazy = false,
+  },
+  'github/copilot.vim',
+  {
+    'filipdutescu/renamer.nvim',
+    config = function()
+      local renamer = require('renamer').setup {}
+
+      vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+      vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+    end,
+  },
+  {
+    'joeveiga/ng.nvim',
+    config = function()
+      local opts = { noremap = true, silent = true }
+      local ng = require 'ng'
+      vim.keymap.set('n', '<leader>at', ng.goto_template_for_component, opts)
+      vim.keymap.set('n', '<leader>ac', ng.goto_component_with_template_file, opts)
+      vim.keymap.set('n', '<leader>aT', ng.get_template_tcb, opts)
+    end,
   },
 }, {
   ui = {
