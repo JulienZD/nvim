@@ -164,7 +164,10 @@ vim.opt.scrolloff = 10
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', function()
   vim.cmd.nohlsearch()
-  require('flash.plugins.char').state:hide()
+  local flash = require 'flash.plugins.char'
+  if flash.state then
+    flash.state:hide()
+  end
 end)
 
 -- Diagnostic keymaps
