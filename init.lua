@@ -910,6 +910,9 @@ require('lazy').setup({
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = {
+      keywords = {
+        NOTE = { icon = ' ', color = 'hint', alt = { 'Note', 'INFO', 'IMPORTANT' } },
+      },
       highlight = {
         -- original pattern: [[.*<(KEYWORDS)\s*:]]
         -- Highlight any TODO or TODO(foo)
