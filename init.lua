@@ -181,8 +181,10 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  See `:help wincmd` for a list of all window commands
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- [ Custom Keymaps ]]
 
 -- Center the cursor line after jumping
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
@@ -192,6 +194,10 @@ vim.keymap.set('n', 'N', 'Nzz', { noremap = true })
 
 -- Yank whole line with Y like in Ideavim
 vim.keymap.set('n', 'Y', 'yy', { noremap = true })
+
+-- Disable q: and q/ to prevent accidental command-line editing
+vim.keymap.set('n', 'q:', ':q', { noremap = true })
+vim.keymap.set('n', 'q/', '<Nop>', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -256,6 +262,34 @@ require('lazy').setup({
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
+      on_attach = function(bufnr)
+        local gitsigns = require 'gitsigns'
+
+        local function map(mode, l, r, opts)
+          opts = opts or {}
+          opts.buffer = bufnr
+          vim.keymap.set(mode, l, r, opts)
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gitsigns.nav_hunk 'next'
+          end
+        end, { desc = 'Jump to next git [c]hange' })
+
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gitsigns.nav_hunk 'prev'
+          end
+        end, { desc = 'Jump to previous git [c]hange' })
+
+        map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
+      end,
       signs = {
         add = { text = '+' },
         change = { text = '~' },
@@ -565,6 +599,8 @@ require('lazy').setup({
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          map('gh', vim.lsp.buf.hover, '[H]over')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -972,50 +1008,11 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   -- { import = 'custom.plugins' },
   {
-    'pmizio/typescript-tools.nvim',
+    -- Use a fork of `pmizio/typescript-tools.nvim` that has a fix to place "Add import" quick fixes to the top
+    'JulienZD/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {},
   },
-  -- {
-  --   'karb94/neoscroll.nvim',
-  --   config = function()
-  --     local neoscroll = require 'neoscroll'
-  --
-  --     local keymap = {
-  --       ['<C-u>'] = function()
-  --         neoscroll.ctrl_u { duration = 150 }
-  --       end,
-  --       ['<C-d>'] = function()
-  --         neoscroll.ctrl_d { duration = 150 }
-  --       end,
-  --       ['<C-b>'] = function()
-  --         neoscroll.ctrl_b { duration = 450 }
-  --       end,
-  --       ['<C-f>'] = function()
-  --         neoscroll.ctrl_f { duration = 450 }
-  --       end,
-  --       ['<C-y>'] = function()
-  --         neoscroll.scroll(-0.1, { move_cursor = false, duration = 100 })
-  --       end,
-  --       ['<C-e>'] = function()
-  --         neoscroll.scroll(0.1, { move_cursor = false, duration = 100 })
-  --       end,
-  --       ['zt'] = function()
-  --         neoscroll.zt { half_win_duration = 250 }
-  --       end,
-  --       ['zz'] = function()
-  --         neoscroll.zz { half_win_duration = 250 }
-  --       end,
-  --       ['zb'] = function()
-  --         neoscroll.zb { half_win_duration = 250 }
-  --       end,
-  --     }
-  --     local modes = { 'n', 'v', 'x' }
-  --     for key, func in pairs(keymap) do
-  --       vim.keymap.set(modes, key, func)
-  --     end
-  --   end,
-  -- },
   {
     'axelvc/template-string.nvim',
     opts = {
@@ -1060,6 +1057,82 @@ require('lazy').setup({
         filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
       }
     end,
+  },
+  {
+    'folke/flash.nvim',
+    event = 'VeryLazy',
+    ---@type Flash.Config
+    opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    },
+  },
+  {
+    'monaqa/dial.nvim',
+    config = function()
+      local augend = require 'dial.augend'
+      require('dial.config').augends:register_group {
+        default = {
+          augend.integer.alias.decimal,
+          augend.integer.alias.hex,
+          augend.constant.new {
+            elements = { 'true', 'false' },
+            word = true,
+            cyclic = true,
+          },
+        },
+      }
+
+      vim.keymap.set('n', '<C-a>', function()
+        require('dial.map').manipulate('increment', 'normal')
+      end)
+      vim.keymap.set('n', '<C-x>', function()
+        require('dial.map').manipulate('decrement', 'normal')
+      end)
+    end,
+  },
+  {
+    'ThePrimeagen/harpoon',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('harpoon').setup {}
+      vim.keymap.set('n', '<leader>hh', function()
+        require('harpoon.ui').toggle_quick_menu()
+      end, { desc = '[H]arpoon [H]ome' })
+
+      vim.keymap.set('n', '<leader>ha', function()
+        require('harpoon.mark').add_file()
+      end, { desc = '[H]arpoon [A]dd' })
+
+      -- TODO: Add keymaps for specific harpoon file indexes
+
+      vim.keymap.set('n', '<C-k>', function()
+        require('harpoon.ui').nav_next()
+      end, { desc = 'Harpoon [N]ext' })
+
+      vim.keymap.set('n', '<C-j>', function()
+        require('harpoon.ui').nav_prev()
+      end, { desc = 'Harpoon [P]revious' })
+    end,
+  },
+  {
+    'kdheepak/lazygit.nvim',
+    lazy = true,
+    cmd = {
+      'LazyGit',
+      'LazyGitConfig',
+      'LazyGitCurrentFile',
+      'LazyGitFilter',
+      'LazyGitFilterCurrentFile',
+    },
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    keys = {
+      { '<leader>lg', '<cmd>LazyGit<cr>', desc = '[L]azy[G]it' },
+    },
   },
 }, {
   ui = {
