@@ -1143,6 +1143,13 @@ require('lazy').setup({
       { '<leader>lg', '<cmd>LazyGit<cr>', desc = '[L]azy[G]it' },
     },
   },
+  {
+    'JulienZD/file-case-gen.nvim',
+    keys = {
+    -- stylua: ignore
+      { '<C-]>', mode = 'i', function() require('file-case-gen').insert_file_name_as 'camel' end, },
+    },
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
