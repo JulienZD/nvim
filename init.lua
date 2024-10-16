@@ -1145,9 +1145,18 @@ require('lazy').setup({
   },
   {
     'JulienZD/file-case-gen.nvim',
+    opts = {
+      default_case = 'camelCase',
+      file_overrides = {
+        ['%.controller%.ts$'] = 'PascalCase',
+        ['%.class%.ts$'] = 'PascalCase',
+        ['%.component%.ts$'] = 'PascalCase',
+        ['%.pipe%.ts$'] = 'PascalCase',
+      },
+    },
     keys = {
     -- stylua: ignore
-      { '<C-]>', mode = 'i', function() require('file-case-gen').insert_file_name_as 'camel' end, },
+      { '<C-]>', mode = 'i', function() require('file-case-gen').insert_cased_file_name() end, },
     },
   },
 }, {
