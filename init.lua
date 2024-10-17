@@ -205,6 +205,9 @@ vim.keymap.set('n', 'Y', 'yy', { noremap = true })
 vim.keymap.set('n', 'q:', ':q', { noremap = true })
 vim.keymap.set('n', 'q/', '<Nop>', { noremap = true })
 
+vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { noremap = true })
+vim.keymap.set('n', '<leader>vv', ':split<CR>', { noremap = true })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -708,6 +711,9 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'shellcheck',
+        'prettierd',
+        'tailwindcss',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -949,6 +955,22 @@ require('lazy').setup({
       -- Don't open the minimap by default, as my current icons are broken (maybe use nerdfix? or a different font entirely)
       -- MiniMap.Open()
 
+      require('mini.move').setup {
+        mappings = {
+          -- Move visual selection in Visual mode.
+          left = 'H',
+          right = 'L',
+          down = 'J',
+          up = 'K',
+
+          -- Move current line in Normal mode
+          line_left = 'H',
+          line_right = 'L',
+          line_down = 'J',
+          line_up = 'K',
+        },
+      }
+
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
@@ -1157,6 +1179,14 @@ require('lazy').setup({
     keys = {
     -- stylua: ignore
       { '<C-]>', mode = 'i', function() require('file-case-gen').insert_cased_file_name() end, },
+    },
+  },
+  {
+    'lukas-reineke/virt-column.nvim',
+    opts = {
+      char = { '┆' },
+      virtcolumn = '120',
+      highlight = { 'NonText' },
     },
   },
 }, {
