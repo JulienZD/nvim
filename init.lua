@@ -1177,6 +1177,7 @@ require('lazy').setup({
       file_overrides = {
         ['%.controller%.ts$'] = 'PascalCase',
         ['%.class%.ts$'] = 'PascalCase',
+        ['%.job%.ts$'] = 'PascalCase',
         ['%.component%.ts$'] = 'PascalCase',
         ['%.pipe%.ts$'] = 'PascalCase',
       },
