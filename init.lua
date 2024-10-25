@@ -1203,6 +1203,15 @@ require('lazy').setup({
       highlight = { 'NonText' },
     },
   },
+  {
+    'nvimdev/lspsaga.nvim',
+    opts = {},
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-tree/nvim-web-devicons',
+      'nvim-lspconfig',
+    },
+  },
 }, {
   change_detection = {
     notify = false,
