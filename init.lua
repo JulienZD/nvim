@@ -157,6 +157,9 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Include $ as part of words, so they're included when renaming (Angular/RxJS uses this a lot)
+vim.opt.iskeyword:append '$'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -1065,6 +1068,61 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   { import = 'custom.plugins' },
+
+  -- UI
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    config = function()
+      require('noice').setup {
+        lsp = {
+          override = {
+            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+            ['vim.lsp.util.stylize_markdown'] = true,
+            ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+          },
+        },
+        presets = {
+          bottom_search = true,
+          command_palette = true,
+          long_message_to_split = true,
+          inc_rename = true,
+          lsp_doc_border = true,
+        },
+        views = {
+          cmdline_popup = {
+            position = '50%',
+          },
+        },
+        routes = {
+          {
+            -- Remove the "No information available" messages, as they're showing up way too often when using LSP
+            filter = {
+              event = 'notify',
+              find = 'No information available',
+            },
+            opts = { skip = true },
+          },
+        },
+      }
+
+      vim.keymap.set({ 'n', 'i', 's' }, '<c-f>', function()
+        if not require('noice.lsp').scroll(4) then
+          return '<c-f>'
+        end
+      end, { silent = true, expr = true })
+
+      vim.keymap.set({ 'n', 'i', 's' }, '<c-b>', function()
+        if not require('noice.lsp').scroll(-4) then
+          return '<c-b>'
+        end
+      end, { silent = true, expr = true })
+    end,
+    dependencies = {
+      'MunifTanjim/nui.nvim',
+    },
+  },
+
   {
     -- Use a fork of `pmizio/typescript-tools.nvim` that has a fix to place "Add import" quick fixes to the top
     'JulienZD/typescript-tools.nvim',
@@ -1083,13 +1141,13 @@ require('lazy').setup({
   },
   'github/copilot.vim',
   {
-    'filipdutescu/renamer.nvim',
+    'smjonas/inc-rename.nvim',
     config = function()
-      local renamer = require('renamer').setup {}
+      require('inc_rename').setup()
 
-      vim.api.nvim_set_keymap('i', '<F2>', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('n', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
-      vim.api.nvim_set_keymap('v', '<leader>rn', '<cmd>lua require("renamer").rename()<cr>', { noremap = true, silent = true })
+      vim.keymap.set('n', '<leader>rn', function()
+        return ':IncRename ' .. vim.fn.expand '<cword>'
+      end, { expr = true })
     end,
   },
   {
