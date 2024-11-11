@@ -205,8 +205,8 @@ vim.keymap.set('n', 'N', 'Nzz', { noremap = true })
 vim.keymap.set('n', 'Y', 'yy', { noremap = true })
 
 -- Disable q: and q/ to prevent accidental command-line editing
-vim.keymap.set('n', 'q:', ':q', { noremap = true })
-vim.keymap.set('n', 'q/', '<Nop>', { noremap = true })
+-- vim.keymap.set('n', 'q:', ':q', { noremap = true })
+-- vim.keymap.set('n', 'q/', '<Nop>', { noremap = true })
 
 vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>vv', ':split<CR>', { noremap = true })
@@ -728,12 +728,19 @@ require('lazy').setup({
       --  You can press `g?` for help in this menu.
       require('mason').setup()
 
+      vim.filetype.add {
+        pattern = {
+          ['.*%.nunjucks'] = 'twig',
+        },
+      }
+
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'shellcheck',
+        'eslint_d',
         'prettierd',
         'tailwindcss',
       })
@@ -794,6 +801,8 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
       },
@@ -1057,7 +1066,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
@@ -1102,6 +1111,10 @@ require('lazy').setup({
               find = 'No information available',
             },
             opts = { skip = true },
+          },
+          {
+            view = 'cmdline',
+            filter = { event = 'msg_showmode' },
           },
         },
       }
