@@ -718,6 +718,34 @@ require('lazy').setup({
             },
           },
         },
+
+        -- For some reason the example lint plugin with eslint_d doesn't work, so I have to use eslint :(
+        -- Requires `vscode-langservers-extracted` to be installed globally with npm / pnpm
+        eslint = {
+          filetypes = {
+            'javascript',
+            'javascriptreact',
+            'javascript.jsx',
+            'typescript',
+            'typescriptreact',
+            'typescript.tsx',
+            'html',
+            'htmlangular',
+            'svelte',
+            'astro',
+          },
+          settings = {
+            expiremental = {
+              useFlatConfig = true,
+            },
+          },
+          on_attach = function(_client, bufnr)
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              buffer = bufnr,
+              command = 'EslintFixAll',
+            })
+          end,
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -741,6 +769,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'shellcheck',
         'eslint_d',
+        'eslint',
         'prettierd',
         'tailwindcss',
       })
@@ -1066,7 +1095,7 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
+  -- require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
