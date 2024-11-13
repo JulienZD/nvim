@@ -734,17 +734,83 @@ require('lazy').setup({
             'svelte',
             'astro',
           },
-          settings = {
-            expiremental = {
-              useFlatConfig = true,
-            },
-          },
           on_attach = function(_client, bufnr)
+            -- Auto-fix on save
             vim.api.nvim_create_autocmd('BufWritePre', {
               buffer = bufnr,
               command = 'EslintFixAll',
             })
           end,
+          -- Mostly copied from the source on_new_config
+          on_new_config = function(config, new_root_dir)
+            -- The "workspaceFolder" is a VSCode concept. It limits how far the
+            -- server will traverse the file system when locating the ESLint config
+            -- file (e.g., .eslintrc).
+            config.settings.workspaceFolder = {
+              uri = new_root_dir,
+              name = vim.fn.fnamemodify(new_root_dir, ':t'),
+            }
+
+            -- HACK: Set max memory for the frontend application
+            -- We can't use on_init, as that doesn't modify the config in time
+            if string.match(new_root_dir, '_frontend') then
+              config.cmd_env = config.cmd_env or {}
+              config.cmd_env = {
+                NODE_OPTIONS = '--max-old-space-size=8192',
+              }
+            end
+
+            -- Support flat config
+            if
+              vim.fn.filereadable(new_root_dir .. '/eslint.config.js') == 1
+              or vim.fn.filereadable(new_root_dir .. '/eslint.config.mjs') == 1
+              or vim.fn.filereadable(new_root_dir .. '/eslint.config.cjs') == 1
+              or vim.fn.filereadable(new_root_dir .. '/eslint.config.ts') == 1
+              or vim.fn.filereadable(new_root_dir .. '/eslint.config.mts') == 1
+              or vim.fn.filereadable(new_root_dir .. '/eslint.config.cts') == 1
+            then
+              config.settings.experimental.useFlatConfig = true
+            end
+
+            local util = require 'lspconfig.util'
+
+            -- Support Yarn2 (PnP) projects
+            local pnp_cjs = util.path.join(new_root_dir, '.pnp.cjs')
+            local pnp_js = util.path.join(new_root_dir, '.pnp.js')
+            if util.path.exists(pnp_cjs) or util.path.exists(pnp_js) then
+              config.cmd = vim.list_extend({ 'yarn', 'exec' }, config.cmd)
+            end
+          end,
+          handlers = {
+            ['eslint/openDoc'] = function(_, result)
+              if not result then
+                return
+              end
+              local sysname = vim.uv.os_uname().sysname
+              if sysname:match 'Windows' then
+                os.execute(string.format('start %q', result.url))
+              elseif sysname:match 'Linux' then
+                os.execute(string.format('xdg-open %q', result.url))
+              else
+                os.execute(string.format('open %q', result.url))
+              end
+              return {}
+            end,
+            ['eslint/confirmESLintExecution'] = function(_, result)
+              if not result then
+                return
+              end
+              return 4 -- approved
+            end,
+            ['eslint/probeFailed'] = function()
+              vim.notify('[lspconfig] ESLint probe failed.', vim.log.levels.WARN)
+              return {}
+            end,
+            ['eslint/noLibrary'] = function()
+              vim.notify('[lspconfig] Unable to find ESLint library.', vim.log.levels.WARN)
+              return {}
+            end,
+          },
         },
       }
 
