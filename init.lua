@@ -1235,7 +1235,14 @@ require('lazy').setup({
     -- Use a fork of `pmizio/typescript-tools.nvim` that has a fix to place "Add import" quick fixes to the top
     'JulienZD/typescript-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
-    opts = {},
+    opts = {
+      settings = {
+        tsserver_file_preferences = {
+          importModuleSpecifierPreference = 'relative',
+          importModuleSpecifierEnding = 'minimal',
+        },
+      },
+    },
   },
   {
     'axelvc/template-string.nvim',

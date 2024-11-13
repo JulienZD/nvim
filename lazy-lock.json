@@ -47,7 +47,7 @@
   "todo-comments.nvim": { "branch": "main", "commit": "ae0a2afb47cf7395dc400e5dc4e05274bf4fb9e0" },
   "tokyonight.nvim": { "branch": "main", "commit": "2c85fad417170d4572ead7bf9fdd706057bd73d7" },
   "tree-sitter-angular": { "branch": "main", "commit": "745d3c65c2294aca1110b6b6ad6805124be605c9" },
-  "typescript-tools.nvim": { "branch": "master", "commit": "3948b89fa2dbdd93bae60c75b24c1b19524875d1" },
+  "typescript-tools.nvim": { "branch": "master", "commit": "869de721c9d655604e1388a96c84472e5f196d82" },
   "vim-sleuth": { "branch": "master", "commit": "be69bff86754b1aa5adcbb527d7fcd1635a84080" },
   "vim-tmux-navigator": { "branch": "master", "commit": "a9b52e7d36114d40350099f254b5f299a35df978" },
   "virt-column.nvim": { "branch": "master", "commit": "b62b4ef0774d19452d4ed18e473e824c7a756f2f" },
