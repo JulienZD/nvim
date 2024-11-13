@@ -182,7 +182,15 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc><Esc>', function()
+  -- Do not close lazygit on escape
+  if string.find(vim.api.nvim_buf_get_name(0), 'lazygit') then
+    return
+  end
+
+  local exit_terminal_keys = vim.api.nvim_replace_termcodes('<C-\\><C-n>', true, true, true)
+  vim.api.nvim_feedkeys(exit_terminal_keys, 'n', true)
+end, { desc = 'Exit terminal mode' })
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
