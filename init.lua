@@ -309,6 +309,11 @@ require('lazy').setup({
         end, { desc = 'Jump to previous git [c]hange' })
 
         map('n', '<leader>gp', gitsigns.preview_hunk, { desc = 'git [p]review hunk' })
+
+        map('n', '<leader>gl', function()
+          gitsigns.blame_line { full = true }
+        end, { desc = 'git [b]lame line' })
+        map('n', '<leader>gb', gitsigns.blame, { desc = 'git [b]lame' })
       end,
       signs = {
         add = { text = '+' },
