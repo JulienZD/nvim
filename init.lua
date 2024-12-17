@@ -1223,7 +1223,20 @@ require('lazy').setup({
     'christoomey/vim-tmux-navigator',
     lazy = false,
   },
-  'github/copilot.vim',
+  {
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    config = function()
+      require('copilot').setup {
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+        },
+        panel = { enabled = false },
+      }
+    end,
+  },
   {
     'smjonas/inc-rename.nvim',
     config = function()
