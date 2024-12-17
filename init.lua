@@ -725,9 +725,20 @@ require('lazy').setup({
           },
         },
 
+        tailwindcss = {
+          flags = {
+            allow_incremental_sync = false,
+            debounce_text_changes = 500,
+          },
+        },
+
         -- For some reason the example lint plugin with eslint_d doesn't work, so I have to use eslint :(
         -- Requires `vscode-langservers-extracted` to be installed globally with npm / pnpm
         eslint = {
+          flags = {
+            allow_incremental_sync = false,
+            debounce_text_changes = 500,
+          },
           filetypes = {
             'javascript',
             'javascriptreact',
