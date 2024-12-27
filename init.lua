@@ -990,12 +990,18 @@ require('lazy').setup({
       },
       ---@diagnostic disable-next-line: missing-fields
       sources = {
-        completion = {
-          enabled_providers = { 'lsp', 'path', 'snippets', 'luasnip', 'buffer' },
-        },
+        default = { 'lsp', 'path', 'snippets', 'luasnip', 'buffer' },
       },
       ---@diagnostic disable-next-line: missing-fields
       completion = {
+        menu = {
+          auto_show = function(ctx)
+            local is_cmdline = ctx.mode == 'cmdline'
+            local is_search = vim.tbl_contains({ '/', '?' }, vim.fn.getcmdtype())
+
+            return not is_cmdline and not is_search
+          end,
+        },
         ---@diagnostic disable-next-line: missing-fields
         accept = { auto_brackets = { enabled = true } },
         ---@diagnostic disable-next-line: missing-fields
@@ -1009,7 +1015,7 @@ require('lazy').setup({
         },
       },
     },
-    opts_extend = { 'sources.completion.enabled_providers' },
+    opts_extend = { 'sources.default' },
   },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
