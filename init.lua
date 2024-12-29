@@ -988,6 +988,30 @@ require('lazy').setup({
           require('luasnip').jump(direction)
         end,
       },
+      fuzzy = {
+        sorts = {
+          'score',
+          'sort_text',
+          -- Custom sorter to promote our own snippets to the very top, as blink demotes snippets by default
+          ---@param a blink.cmp.CompletionItem
+          ---@param b blink.cmp.CompletionItem
+          function(a, b)
+            local OWN_SNIPPET_MARKER = '__CUSTOM_SNIPPET__'
+
+            for _, item in ipairs { a, b } do
+              if item.kind == require('blink.cmp.types').CompletionItemKind.Snippet then
+                ---@type string
+                ---@diagnostic disable-next-line: assign-type-mismatch
+                local documentation = item.documentation and item.documentation.value or item.documentation or ''
+
+                if documentation:find(OWN_SNIPPET_MARKER) then
+                  return true
+                end
+              end
+            end
+          end,
+        },
+      },
       ---@diagnostic disable-next-line: missing-fields
       sources = {
         default = { 'lsp', 'path', 'snippets', 'luasnip', 'buffer' },

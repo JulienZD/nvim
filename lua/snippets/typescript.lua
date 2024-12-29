@@ -2,7 +2,12 @@ local git_util = require 'util.git'
 
 local function keyword_snippet(keyword)
   return s(
-    keyword,
+    {
+      trig = keyword,
+      -- Add a custom marker to the description, so we can detect it and sort the snippet higher
+      -- blink.cmp doesn't respect the priority of snippets, so we need to do this manually
+      desc = 'Adds the keyword with the ticket id if available\n__CUSTOM_SNIPPET__',
+    },
     f(function()
       local ticket_id = git_util.get_ticket_id()
 
