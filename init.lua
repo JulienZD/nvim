@@ -1170,8 +1170,6 @@ require('lazy').setup({
           override = {
             ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
             ['vim.lsp.util.stylize_markdown'] = true,
-            -- TODO: Re-enable for blink?
-            -- ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
           },
         },
         presets = {
@@ -1379,8 +1377,14 @@ require('lazy').setup({
       },
     },
     keys = {
-    -- stylua: ignore
-      { '<C-]>', mode = 'i', function() require('file-case-gen').insert_cased_file_name() end, },
+      {
+        '<C-g>',
+        function()
+          require('file-case-gen').insert_cased_file_name()
+        end,
+        mode = 'i',
+        desc = 'Insert cased [G]enerated file name',
+      },
     },
   },
   {
