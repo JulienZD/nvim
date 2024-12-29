@@ -1015,6 +1015,7 @@ require('lazy').setup({
         },
       },
     },
+    experimental = { signature = true },
     opts_extend = { 'sources.default' },
   },
   { -- You can easily change to a different colorscheme.
@@ -1108,8 +1109,11 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
+      -- Disable the filename section in the statusline, as it's already provided by lspsaga's breadcrumbs
+      ---@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_filename = function()
+        return ''
+      end
     end,
   },
   { -- Highlight, edit, and navigate code
