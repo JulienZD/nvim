@@ -922,8 +922,10 @@ require('lazy').setup({
     opts = {
       settings = {
         tsserver_file_preferences = {
+          autoImportFileExcludePatterns = { 'zod/lib' },
           importModuleSpecifierPreference = 'relative',
           importModuleSpecifierEnding = 'minimal',
+          quotePreference = 'single',
         },
       },
     },
