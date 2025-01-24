@@ -815,7 +815,7 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
-      -- Disable the filename section in the statusline, as it's already provided by lspsaga's breadcrumbs
+      -- Disable the filename section in the statusline, as it's already provided by dropbar's breadcrumbs
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_filename = function()
         return ''
@@ -1089,13 +1089,8 @@ require('lazy').setup({
     },
   },
   {
-    'nvimdev/lspsaga.nvim',
+    'Bekaboo/dropbar.nvim',
     opts = {},
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-tree/nvim-web-devicons',
-      'nvim-lspconfig',
-    },
   },
 }, {
   change_detection = {
