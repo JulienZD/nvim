@@ -728,6 +728,9 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
+
+        php = { 'pint' },
+        blade = { 'blade-formatter' },
       },
     },
   },
