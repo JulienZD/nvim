@@ -926,7 +926,16 @@ require('lazy').setup({
       settings = {
         tsserver_file_preferences = {
           autoImportFileExcludePatterns = { 'zod/lib' },
-          importModuleSpecifierPreference = 'relative',
+          importModuleSpecifierPreference = (function()
+            local is_angular = vim.fn.filereadable 'angular.json' == 1
+            -- Using 'shortest' for Angular projects results in imports like `import { foo } from 'src/foo/bar', which
+            -- isn't valid
+            if is_angular then
+              return 'relative'
+            end
+
+            return 'shortest'
+          end)(),
           importModuleSpecifierEnding = 'minimal',
           quotePreference = 'single',
         },
