@@ -73,8 +73,12 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- Include $ as part of words, so they're included when renaming (Angular/RxJS uses this a lot)
-vim.opt.iskeyword:append '$'
+local is_angular_project = vim.fn.filereadable './angular.json' == 1
+
+if is_angular_project then
+  -- Include $ as part of words, so they're included when renaming (Angular/RxJS uses this a lot)
+  vim.opt.iskeyword:append '$'
+end
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -569,9 +573,8 @@ require('lazy').setup({
           -- Note: This is mostly copied from the source on_new_config, with one modification to set the NODE_OPTIONS
           -- to increase the memory for Angular apps
           on_new_config = function(config, new_root_dir)
-            local is_angular_app = vim.fn.filereadable './angular.json' == 1
             -- HACK: Set max memory for the angular apps - we can't use on_init, as that doesn't modify the config in time
-            if is_angular_app then
+            if is_angular_project then
               config.cmd_env = config.cmd_env or {}
               config.cmd_env = {
                 NODE_OPTIONS = '--max-old-space-size=8192',
@@ -927,10 +930,9 @@ require('lazy').setup({
         tsserver_file_preferences = {
           autoImportFileExcludePatterns = { 'zod/lib' },
           importModuleSpecifierPreference = (function()
-            local is_angular = vim.fn.filereadable 'angular.json' == 1
             -- Using 'shortest' for Angular projects results in imports like `import { foo } from 'src/foo/bar', which
             -- isn't valid
-            if is_angular then
+            if is_angular_project then
               return 'relative'
             end
 
