@@ -1,10 +1,10 @@
 return {
   'saghen/blink.cmp',
-  lazy = false, -- lazy loading handled internally
   dependencies = {
     'rafamadriz/friendly-snippets',
     {
       'L3MON4D3/LuaSnip',
+      version = 'v2.*',
       build = (function()
         -- Build Step is needed for regex support in snippets.
         -- This step is not supported in many windows environments.
@@ -32,7 +32,7 @@ return {
       },
     },
   },
-  version = 'v0.*',
+  version = 'v0.12.*',
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
   opts = {
@@ -49,21 +49,11 @@ return {
       nerd_font_variant = 'mono',
     },
     snippets = {
-      expand = function(snippet)
-        require('luasnip').lsp_expand(snippet)
-      end,
-      active = function(filter)
-        if filter and filter.direction then
-          return require('luasnip').jumpable(filter.direction)
-        end
-        return require('luasnip').in_snippet()
-      end,
-      jump = function(direction)
-        require('luasnip').jump(direction)
-      end,
+      preset = 'luasnip',
     },
     fuzzy = {
       sorts = {
+        'exact',
         'score',
         'sort_text',
         -- Custom sorter to promote our own snippets to the very top, as blink demotes snippets by default
@@ -87,7 +77,7 @@ return {
       },
     },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'luasnip', 'buffer' },
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
     completion = {
       menu = {
