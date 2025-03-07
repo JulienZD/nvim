@@ -779,6 +779,12 @@ require('lazy').setup({
   },
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    dependencies = {
+      {
+        'JulienZD/copilot-statusline.nvim',
+        opts = {},
+      },
+    },
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -828,7 +834,7 @@ require('lazy').setup({
         local location = statusline.section_location { trunc_width = 75 }
         local search = statusline.section_searchcount { trunc_width = 75 }
 
-        local copilot = require('util.copilot-statusline').section_copilot { trunc_width = 75 }
+        local copilot = require('copilot-statusline').section_copilot { trunc_width = 75 }
 
         return statusline.combine_groups {
           { hl = mode_hl, strings = { mode } },
@@ -1145,6 +1151,9 @@ require('lazy').setup({
   change_detection = {
     notify = false,
   },
+  -- dev = {
+  --   path = '~/dev/nvim/dev',
+  -- },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
