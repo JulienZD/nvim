@@ -32,7 +32,7 @@ return {
       },
     },
   },
-  version = 'v0.12.*',
+  version = '1.0.*',
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
   opts = {
