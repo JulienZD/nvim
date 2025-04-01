@@ -454,14 +454,27 @@ require('lazy').setup({
           --  Similar to document symbols, except searches over your entire project.
           map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
-          -- Rename the variable under your cursor.
-          --  Most Language Servers support renaming across files, etc.
-          -- Disabled in favor of inc-rename
-          -- map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
-
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+          -- Sort code actions by "Add import" and "Update import" first
+          local original_select = vim.ui.select
+
+          ---@diagnostic disable-next-line: duplicate-set-field
+          vim.ui.select = function(items, opts, on_choice)
+            if opts and opts.kind == 'codeaction' then
+              table.sort(items, function(a, _)
+                if a.action and a.action.title and (string.find(a.action.title, 'Add import') or string.find(a.action.title, 'Update import')) then
+                  return true
+                end
+
+                return false
+              end)
+            end
+
+            original_select(items, opts, on_choice)
+          end
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
