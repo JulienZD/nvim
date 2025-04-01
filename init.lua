@@ -707,7 +707,7 @@ require('lazy').setup({
       formatters = {
         biome = {
           require_cwd = true,
-          args = { 'check', '--apply', '--stdin-file-path', '$FILENAME' },
+          args = { 'check', '--fix', '--stdin-file-path', '$FILENAME' },
         },
       },
       format_on_save = function(bufnr)
