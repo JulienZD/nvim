@@ -307,7 +307,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', opts = {}, enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- [[ Configure Telescope ]]
@@ -1158,6 +1158,7 @@ require('lazy').setup({
   },
   {
     'Bekaboo/dropbar.nvim',
+    version = '12.*', -- 13+ requires nvim 0.11+
     opts = {},
   },
 }, {
