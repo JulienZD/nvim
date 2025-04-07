@@ -96,6 +96,9 @@ end)
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+vim.keymap.set('n', ']q', ':cnext<CR>', { desc = 'Jump to next [Q]uickfix item', silent = true })
+vim.keymap.set('n', '[q', ':cprev<CR>', { desc = 'Jump to previous [Q]uickfix item', silent = true })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -158,7 +161,6 @@ vim.api.nvim_create_autocmd({ 'FocusLost', 'ModeChanged', 'TextChanged', 'BufEnt
   pattern = '*',
   command = 'silent! update',
 })
-
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
