@@ -9,8 +9,8 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
     local original_select = vim.ui.select
 
     local actions_to_sort_first = {
+      'Update import', -- update import takes precedence over add import
       'Add import',
-      'Update import',
     }
 
     local actions_to_exclude = {
@@ -56,19 +56,23 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
         end
       end
 
-      -- Sort items to show more relevant actions first
-      table.sort(filtered_items, function(a, _)
-        if not a.action or not a.action.title or a.ctx.client_id ~= typescript_client.id then
-          return false
+      local function get_priority(item)
+        if not item.action or not item.action.title or item.ctx.client_id ~= typescript_client.id then
+          return math.huge
         end
 
-        for _, action in ipairs(actions_to_sort_first) do
-          if string.find(a.action.title, action) then
-            return true
+        for i, action in ipairs(actions_to_sort_first) do
+          if string.find(item.action.title, action) then
+            return i
           end
         end
 
-        return false
+        return math.huge
+      end
+
+      -- Sort items to show more relevant actions first
+      table.sort(filtered_items, function(a, b)
+        return get_priority(a) < get_priority(b)
       end)
 
       original_select(filtered_items, opts, on_choice)
