@@ -563,10 +563,37 @@ require('lazy').setup({
             'astro',
           },
           on_attach = function(_client, bufnr)
-            -- Auto-fix on save
+            local also_has_biome = vim.fn.filereadable(vim.fn.getcwd() .. '/biome.jsonc') == 1
+
             vim.api.nvim_create_autocmd('BufWritePre', {
               buffer = bufnr,
-              command = 'EslintFixAll',
+              callback = function()
+                if not also_has_biome then
+                  vim.cmd 'EslintFixAll'
+                  return
+                end
+
+                -- We're in an ESLint + Biome workspace, so we have to do some shenanigans to ensure
+                -- both formatters run in the right order
+                local function run_biome()
+                  require('conform').format {
+                    formatters = { 'biome' },
+                    bufnr = bufnr,
+                    async = true,
+                  }
+                end
+
+                -- First run biome
+                run_biome()
+
+                -- Then run eslint, but only after a short delay to ensure biome has finished
+                vim.defer_fn(function()
+                  vim.cmd 'EslintFixAll'
+
+                  -- Then run biome *again* to fix any formatting issues caused by eslint
+                  vim.defer_fn(run_biome, 100)
+                end, 100)
+              end,
             })
           end,
           -- Note: This is mostly copied from the source on_new_config, with one modification to set the NODE_OPTIONS
