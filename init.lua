@@ -461,6 +461,30 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
+          -- Faster-ish code action that detaches first detaches ESLint because it's slow and can take up to 30 seconds
+          -- for a code action to show up. Usually I just need a quick fix, so I don't need to wait for ESLint.
+          map('<leader>cA', function()
+            -- No need to detach ESLint if it's not an Angular project, because it's not that slow
+            if vim.g.is_angular_project then
+              vim.lsp.buf.code_action()
+              return
+            end
+
+            -- Detach ESLint because it's slow
+            for _, client in ipairs(vim.lsp.get_clients()) do
+              if client.name == 'eslint' then
+                vim.lsp.buf_detach_client(vim.api.nvim_get_current_buf(), client.id)
+                break
+              end
+            end
+
+            vim.lsp.buf.code_action()
+
+            vim.defer_fn(function()
+              vim.cmd 'LspStart eslint'
+            end, 1000)
+          end, '[C]ode [A]ction (no ESLint)', { 'n', 'x' })
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
