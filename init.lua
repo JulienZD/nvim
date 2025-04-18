@@ -1038,14 +1038,6 @@ require('lazy').setup({
     end,
   },
   {
-    'joeveiga/ng.nvim',
-    config = function()
-      local ng = require 'ng'
-      vim.keymap.set('n', '<leader>at', ng.goto_template_for_component, { noremap = true, silent = true, desc = 'Go to [A]ngular [T]emplate' })
-      vim.keymap.set('n', '<leader>ac', ng.goto_component_with_template_file, { noremap = true, silent = true, desc = 'Go to [A]ngular [C]omponent' })
-    end,
-  },
-  {
     'dlvandenberg/tree-sitter-angular',
     config = function()
       vim.filetype.add {
