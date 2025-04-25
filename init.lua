@@ -139,7 +139,9 @@ vim.keymap.set('n', 'N', 'Nzz', { noremap = true })
 vim.keymap.set('n', '<leader>vs', ':vsplit<CR>', { noremap = true })
 vim.keymap.set('n', '<leader>vv', ':split<CR>', { noremap = true })
 
-vim.keymap.set('n', '<leader>rl', ':LspRestart<CR>', { noremap = true, desc = '[R]estart [L]SP' })
+-- Prefer ^ over 0, but 0 is easier to reach
+vim.keymap.set('n', '0', '^', { noremap = true })
+vim.keymap.set('n', '^', '0', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -431,6 +433,8 @@ require('lazy').setup({
             mode = mode or 'n'
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
+
+          map('<leader>rl', ':LspRestart<CR>', '[R]estart [L]SP')
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
