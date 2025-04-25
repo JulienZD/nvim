@@ -822,10 +822,7 @@ require('lazy').setup({
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
     dependencies = {
-      {
-        'JulienZD/copilot-statusline.nvim',
-        opts = {},
-      },
+      'JulienZD/copilot-statusline.nvim',
     },
     config = function()
       -- Better Around/Inside textobjects
@@ -1021,15 +1018,13 @@ require('lazy').setup({
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter',
-    config = function()
-      require('copilot').setup {
-        suggestion = {
-          enabled = true,
-          auto_trigger = true,
-        },
-        panel = { enabled = false },
-      }
-    end,
+    opts = {
+      suggestion = {
+        enabled = true,
+        auto_trigger = true,
+      },
+      panel = { enabled = false },
+    },
   },
   {
     'smjonas/inc-rename.nvim',
