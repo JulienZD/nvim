@@ -792,6 +792,8 @@ require('lazy').setup({
         tsx = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
         html = { 'prettierd', 'prettier', stop_after_first = true },
         htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
+        scss = { 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
 
         php = { 'pint' },
         blade = { 'blade-formatter' },
