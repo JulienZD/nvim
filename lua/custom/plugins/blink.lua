@@ -1,10 +1,12 @@
 return {
   'saghen/blink.cmp',
+  event = 'VimEnter',
+  version = '1.*',
   dependencies = {
     'rafamadriz/friendly-snippets',
     {
       'L3MON4D3/LuaSnip',
-      version = 'v2.*',
+      version = '2.*',
       build = (function()
         -- Build Step is needed for regex support in snippets.
         -- This step is not supported in many windows environments.
@@ -32,7 +34,6 @@ return {
       },
     },
   },
-  version = '1.0.*',
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
   opts = {
