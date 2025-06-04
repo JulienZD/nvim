@@ -469,6 +469,8 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
+          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame', { 'n', 'x' })
+
           -- Faster-ish code action that detaches first detaches ESLint because it's slow and can take up to 30 seconds
           -- for a code action to show up. Usually I just need a quick fix, so I don't need to wait for ESLint.
           map('<leader>cA', function()
@@ -973,7 +975,6 @@ require('lazy').setup({
           bottom_search = true,
           command_palette = true,
           long_message_to_split = true,
-          inc_rename = true,
           lsp_doc_border = true,
         },
         views = {
@@ -1049,16 +1050,6 @@ require('lazy').setup({
       },
       panel = { enabled = false },
     },
-  },
-  {
-    'smjonas/inc-rename.nvim',
-    config = function()
-      require('inc_rename').setup()
-
-      vim.keymap.set('n', '<leader>rn', function()
-        return ':IncRename ' .. vim.fn.expand '<cword>'
-      end, { expr = true })
-    end,
   },
   {
     'dlvandenberg/tree-sitter-angular',
