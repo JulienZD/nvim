@@ -1122,22 +1122,6 @@ require('lazy').setup({
     end,
   },
   {
-    'kdheepak/lazygit.nvim',
-    lazy = true,
-    enabled = false,
-    cmd = {
-      'LazyGit',
-      'LazyGitConfig',
-      'LazyGitCurrentFile',
-      'LazyGitFilter',
-      'LazyGitFilterCurrentFile',
-    },
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    keys = {
-      { '<leader>lg', '<cmd>LazyGit<cr>', desc = '[L]azy[G]it' },
-    },
-  },
-  {
     'JulienZD/file-case-gen.nvim',
     opts = {
       default_case = 'camelCase',
