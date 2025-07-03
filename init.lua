@@ -335,6 +335,9 @@ require('lazy').setup({
           layout_config = {
             width = 0.95,
           },
+          cache_picker = {
+            ignore_empty_prompt = true,
+          },
         },
         extensions = {
           ['ui-select'] = {
