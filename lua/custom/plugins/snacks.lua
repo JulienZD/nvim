@@ -14,7 +14,14 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = {
-      lazygit = { enabled = true },
+      lazygit = {
+        enabled = true,
+        config = {
+          os = {
+            editPreset = 'nvim',
+          },
+        },
+      },
       dashboard = {
         sections = {
           { section = 'header' },
