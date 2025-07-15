@@ -23,6 +23,7 @@ return {
         },
       },
       dashboard = {
+        enabled = false,
         sections = {
           { section = 'header' },
           { section = 'keys', gap = 1, padding = 1 },
