@@ -33,6 +33,7 @@ return {
         },
       },
     },
+    'Kaiser-Yang/blink-cmp-avante',
   },
   ---@module 'blink.cmp'
   ---@type blink.cmp.Config
@@ -78,7 +79,16 @@ return {
       },
     },
     sources = {
-      default = { 'lsp', 'path', 'snippets', 'buffer' },
+      default = { 'avante', 'lsp', 'path', 'snippets', 'buffer' },
+      providers = {
+        avante = {
+          module = 'blink-cmp-avante',
+          name = 'Avante',
+          opts = {
+            -- options for blink-cmp-avante
+          },
+        },
+      },
     },
     completion = {
       menu = {
