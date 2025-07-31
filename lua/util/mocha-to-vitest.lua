@@ -45,6 +45,51 @@ function M.mocha_to_vitest()
     %s/SinonStub/MockInstance/g
   ]]
 
+  safe_sub [[
+    %s/sinon.\(SinonStub\|SinonSpy\)/MockInstance/g
+  ]]
+
+
+  safe_sub [[
+    %s/.to.have.been.called;/.toHaveBeenCalled();/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.been.calledOnce;/.toHaveBeenCalledOnce();/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.been.calledTwice;/.toHaveBeenCalledTimes(2);/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.been.calledThrice;/.toHaveBeenCalledTimes(3);/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.been.calledWith(/.toHaveBeenCalledWith(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.been.calledOnceWith(/.toHaveBeenCalledExactlyOnceWith(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.not.have.been.called;/.not.toHaveBeenCalled();/g
+  ]]
+
+  safe_sub [[
+    %s/.not.to.have.been.called;/.not.toHaveBeenCalled();/g
+  ]]
+
+  safe_sub [[
+    %s/.resolves(/.mockResolvedValue(/g
+  ]]
+
+  safe_sub [[
+    %s/.rejects(/.mockRejectedValue(/g
+  ]]
+
   -- Promise assertion conversions
 
   safe_sub [[
@@ -72,6 +117,11 @@ function M.mocha_to_vitest()
     %s/).to.eventually.be.fulfilled\([,;]\)/).resolves.toBeDefined()\1/g
   ]]
 
+  safe_sub [[
+    %s/).to.be.eventually.fulfilled\([,;]\)/).resolves.toBeDefined()\1/g
+  ]]
+
+
   -- Re-order any expectErrorWithMessage calls that have 4 arguments. The second should be moved to the fourth, as this
   -- is the debug message we can pass to expect()
 
@@ -88,11 +138,47 @@ function M.mocha_to_vitest()
   -- Regular expect conversions
 
   safe_sub [[
-    %s/.to.deepEqualInAnyOrder(/.toIncludeSameMembers(/g
+    %s/.to.deep.equalInAnyOrder(/.toIncludeSameMembers(/g
   ]]
 
   safe_sub [[
-    %s/.to.equal(/.toBe(/g
+    %s/.to.equal(/.toEqual(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.not.equal(/.not.toEqual(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.eql(/.toEqual(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.property(/.toHaveProperty(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.not.have.property(/.not.toHaveProperty(/g
+  ]]
+
+  safe_sub [[
+    %s/expect(\(.*\)).to.be.an('array');/expect(Array.isArray(\1)).toBe(true);/g
+  ]]
+
+  safe_sub [[
+    %s/.to.be.\(false\|true\)/.toBe(\1)/g
+  ]]
+
+  safe_sub [[
+    %s/.to.exist;/.toBeDefined();/g
+  ]]
+
+  safe_sub [[
+    %s/.to.have.lengthOf(/.toHaveLength(/g
+  ]]
+
+  safe_sub [[
+    %s/.to.deep.equal(/.toStrictEqual(/g
   ]]
 
   safe_sub [[
@@ -115,6 +201,10 @@ function M.mocha_to_vitest()
     %s/.to.be.ok/.toBeTruthy()/g
   ]]
 
+  safe_sub [[
+    %s/.to.be.instanceOf(/.toBeInstanceOf(/g
+  ]]
+
   -- Manually convert this, as the jest-codemods converts this to expect(Object.keys(arr)).toHaveLength(0) which is redundant
   safe_sub [[
     %s/.to.be.empty/.toHaveLength(0)/g
@@ -128,7 +218,6 @@ function M.mocha_to_vitest()
   -- JEST CODEMOD
   -- exec the following
   -- jscodeshift --parser=ts -t node_modules/jest-codemods/dist/transformers/chai-should.js <target-test-file>
-
 end
 
 return M
