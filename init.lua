@@ -1126,13 +1126,21 @@ require('lazy').setup({
     'JulienZD/file-case-gen.nvim',
     opts = {
       default_case = 'camelCase',
-      file_overrides = {
-        ['%.controller%.ts$'] = 'PascalCase',
-        ['%.class%.ts$'] = 'PascalCase',
-        ['%.job%.ts$'] = 'PascalCase',
-        ['%.component%.ts$'] = 'PascalCase',
-        ['%.pipe%.ts$'] = 'PascalCase',
-      },
+      file_overrides = (function()
+        local mappings = {
+          ['%.controller%.ts$'] = 'PascalCase',
+          ['%.class%.ts$'] = 'PascalCase',
+          ['%.job%.ts$'] = 'PascalCase',
+        }
+
+        if vim.g.is_angular_project then
+          mappings['%.service%.ts$'] = 'PascalCase'
+          mappings['%.component%.ts$'] = 'PascalCase'
+          mappings['%.pipe%.ts$'] = 'PascalCase'
+        end
+
+        return mappings
+      end)(),
     },
     keys = {
       {
