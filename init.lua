@@ -337,9 +337,24 @@ require('lazy').setup({
         -- },
         -- pickers = {}
         defaults = {
-          layout_config = {
-            width = 0.95,
-          },
+          layout_config = (function()
+            local cols = vim.o.columns or 0
+
+            -- 4k display
+            local is_large_screen = cols >= 300
+
+            if is_large_screen then
+              return {
+                width = 0.75,
+                height = 0.75,
+                prompt_position = 'top',
+              }
+            end
+
+            return {
+              width = 0.95,
+            }
+          end)(),
           cache_picker = {
             ignore_empty_prompt = true,
           },
