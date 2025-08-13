@@ -53,4 +53,67 @@ M.live_multigrep = function(opts)
     :find()
 end
 
+local DEFAULT_TIMEOUT = 60000 * 2 -- 2 minutes in milliseconds
+
+-- Automatically close the given picker after the given time (defaults to 2 minutes, as most keymappings are not able
+-- to be detected yet to restart the timer)
+M.with_auto_close = function(open_picker_callback, timeout)
+  return function(...)
+    local actions = require 'telescope.actions'
+    local action_state = require 'telescope.actions.state'
+
+    local timer = vim.loop.new_timer()
+
+    -- @type uv_timer_t | nil
+    local debounce_timer = nil
+
+    local restart_timer, debounce_timer_ref = require('telescope.debounce').debounce_leading(function()
+      timer:stop()
+
+      timer:start(
+        timeout or DEFAULT_TIMEOUT,
+        0,
+        vim.schedule_wrap(function()
+          -- Check if picker still exists before closing
+          local bufnr = vim.api.nvim_get_current_buf()
+          local picker = action_state.get_current_picker(bufnr)
+          if picker then
+            actions.close(picker.prompt_bufnr)
+          end
+
+          timer:close()
+          if debounce_timer then
+            debounce_timer:close()
+          end
+        end)
+      )
+    end, 100)
+
+    debounce_timer = debounce_timer_ref
+
+    restart_timer() -- start when picker opens
+
+    -- Restart timer on any action in normal or insert mode
+    vim.defer_fn(function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      local picker = action_state.get_current_picker(bufnr)
+
+      -- Only act on the picker window
+      if not picker then
+        return
+      end
+
+      -- TODO: Keymappings for the picker window are ignored here, so they aren't handled (e.g. <C-n> or <C-p> to navigate)
+      vim.api.nvim_create_autocmd({ 'InsertCharPre', 'TextChangedI', 'CursorMoved', 'CursorMovedI' }, {
+        buffer = bufnr,
+        callback = function()
+          restart_timer()
+        end,
+      })
+    end, 100)
+
+    return open_picker_callback(...)
+  end
+end
+
 return M
