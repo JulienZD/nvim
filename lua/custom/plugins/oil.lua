@@ -22,6 +22,6 @@ return {
   keys = {
     { '-', ':Oil<CR>', desc = 'Open Oil' },
   },
-  dependencies = { { 'echasnovski/mini.icons', opts = {} } },
+  dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
   -- dependencies = { 'nvim-tree/nvim-web-devicons' },
 }
