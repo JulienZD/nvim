@@ -5,6 +5,7 @@
   "blink-cmp-avante": { "branch": "master", "commit": "4f494c6e124acbe31a8f5d58effa0c14aa38a6d5" },
   "blink.cmp": { "branch": "main", "commit": "327fff91fe6af358e990be7be1ec8b78037d2138" },
   "conform.nvim": { "branch": "master", "commit": "b4aab989db276993ea5dcb78872be494ce546521" },
+  "copilot-lsp": { "branch": "main", "commit": "5030766af6dce2181d48b928537ebe1919ec8d22" },
   "copilot-statusline.nvim": { "branch": "main", "commit": "025ea2870a7e902819eb39b8a1f58c8f8109555c" },
   "copilot.lua": { "branch": "master", "commit": "f8fa941f1152ad89c73f8f2ae6e570869bf62b28" },
   "dial.nvim": { "branch": "master", "commit": "f0404ec1f83a03f2c3457e60087c6331d1cbb83f" },
