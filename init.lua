@@ -759,6 +759,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         ensure_installed = {},
         automatic_installation = false,
+        automatic_enable = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -766,7 +767,7 @@ require('lazy').setup({
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+            vim.lsp.config(server_name, server)
           end,
         },
       }
@@ -1080,9 +1081,9 @@ require('lazy').setup({
 
       vim.cmd 'runtime! ftplugin/html.vim!'
 
-      require('lspconfig').angularls.setup {
+      vim.lsp.config('angularls', {
         filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
-      }
+      })
     end,
   },
   {
