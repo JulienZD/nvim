@@ -80,6 +80,9 @@ if vim.g.is_angular_project then
   vim.opt.iskeyword:append '$'
 end
 
+-- 4k display
+vim.g.is_large_screen = vim.o.columns >= 300
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -338,12 +341,7 @@ require('lazy').setup({
         -- pickers = {}
         defaults = {
           layout_config = (function()
-            local cols = vim.o.columns or 0
-
-            -- 4k display
-            local is_large_screen = cols >= 300
-
-            if is_large_screen then
+            if vim.g.is_large_screen then
               return {
                 width = 0.75,
                 height = 0.75,
