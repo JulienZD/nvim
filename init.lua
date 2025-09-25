@@ -83,6 +83,10 @@ end
 -- 4k display
 vim.g.is_large_screen = vim.o.columns >= 300
 
+---@alias AIProvider 'copilot' | 'augment'
+---@type AIProvider
+vim.g.ai_provider = 'copilot'
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 

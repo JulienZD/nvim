@@ -1,9 +1,15 @@
 ---@diagnostic disable: missing-fields
--- views can only be fully collapsed with the global statusline -- recommended by avante.nvim
-vim.opt.laststatus = 3
+
+local is_enabled = vim.g.ai_provider == 'copilot'
+
+if is_enabled then
+  -- views can only be fully collapsed with the global statusline -- recommended by avante.nvim
+  vim.opt.laststatus = 3
+end
 
 return {
   'yetone/avante.nvim',
+  cond = is_enabled,
   build = 'make',
   event = 'VeryLazy',
   version = false, -- Never set this value to "*"! Never!

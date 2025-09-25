@@ -3,6 +3,7 @@ return {
   dependencies = {
     'copilotlsp-nvim/copilot-lsp',
   },
+  cond = vim.g.ai_provider == 'copilot',
   cmd = 'Copilot',
   event = 'InsertEnter',
   opts = {
@@ -12,7 +13,7 @@ return {
     },
     panel = { enabled = false },
     nes = {
-      enabled = true,
+      enabled = false,
       keymap = {
         accept_and_goto = '<leader>p',
         accept = false,
