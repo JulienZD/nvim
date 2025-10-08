@@ -18,6 +18,12 @@ return {
         return false
       end,
     },
+    keymaps = {
+      -- <C-h> and <C-l> are used by tmux navigator
+      ['<C-h>'] = false,
+      ['<C-l>'] = false,
+      ['<C-r>'] = 'actions.refresh',
+    },
   },
   keys = {
     { '-', ':Oil<CR>', desc = 'Open Oil' },
