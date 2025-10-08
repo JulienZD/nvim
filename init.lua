@@ -755,7 +755,13 @@ require('lazy').setup({
         'eslint',
         'prettierd',
         'tailwindcss',
+        'biome',
       })
+
+      if vim.g.is_angular_project then
+        vim.list_extend(ensure_installed, { 'angularls' })
+      end
+
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       local capabilities = require('blink.cmp').get_lsp_capabilities()
@@ -1074,6 +1080,10 @@ require('lazy').setup({
 
       vim.lsp.config('angularls', {
         filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
+        on_attach = function(client, _bufnr)
+          --HACK: disable angular renaming capability due to duplicate rename popping up
+          client.server_capabilities.renameProvider = false
+        end,
       })
     end,
   },
