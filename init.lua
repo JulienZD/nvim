@@ -1081,8 +1081,17 @@ require('lazy').setup({
       vim.lsp.config('angularls', {
         filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
         on_attach = function(client, _bufnr)
-          --HACK: disable angular renaming capability due to duplicate rename popping up
-          client.server_capabilities.renameProvider = false
+          if not vim.g.is_angular_project then
+            return
+          end
+
+          --HACK: We need to disable the renaming capability of either typescript (if available) or Angular to prevent
+          -- duplicate rename prompts
+          local typescript_client = vim.lsp.get_clients({ name = 'typescript-tools' })[1]
+
+          local client_to_modify = typescript_client or client
+
+          client_to_modify.server_capabilities.renameProvider = false
         end,
       })
     end,
