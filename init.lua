@@ -87,7 +87,7 @@ vim.g.is_work_project = vim.fn.getcwd():find '/work/' ~= nil
 
 ---@alias AIProvider 'copilot' | 'augment'
 ---@type AIProvider
-vim.g.ai_provider = vim.g.is_work_project and 'augment' or 'copilot'
+vim.g.ai_completions_provider = vim.g.is_work_project and 'augment' or 'copilot'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`

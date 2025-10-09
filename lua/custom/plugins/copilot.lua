@@ -3,12 +3,11 @@ return {
   dependencies = {
     'copilotlsp-nvim/copilot-lsp',
   },
-  cond = vim.g.ai_provider == 'copilot',
   cmd = 'Copilot',
   event = 'InsertEnter',
   opts = {
     suggestion = {
-      enabled = true,
+      enabled = vim.g.ai_completions_provider == 'copilot',
       auto_trigger = true,
     },
     panel = { enabled = false },

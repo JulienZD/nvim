@@ -8,7 +8,7 @@ local function get_git_root()
   return nil
 end
 
-local is_enabled = vim.g.ai_provider == 'augment'
+local is_enabled = vim.g.ai_completions_provider == 'augment'
 
 if is_enabled then
   vim.g.augment_workspace_folders = { get_git_root() }
