@@ -151,6 +151,10 @@ vim.keymap.set('n', '<leader>vv', ':split<CR>', { noremap = true })
 vim.keymap.set('n', '0', '^', { noremap = true })
 vim.keymap.set('n', '^', '0', { noremap = true })
 
+-- Easily navigate the quickfix list
+vim.keymap.set('n', ']q', ':cnext<CR>zz', { noremap = true, desc = 'Jump to next quickfix item' })
+vim.keymap.set('n', '[q', ':cprev<CR>zz', { noremap = true, desc = 'Jump to previous quickfix item' })
+
 -- Remove default LSP keybinds
 vim.keymap.del('n', 'grr')
 vim.keymap.del('n', 'gra')
