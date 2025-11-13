@@ -14,6 +14,11 @@ return {
     lazy = false,
     ---@type snacks.Config
     opts = {
+      win = {
+        width = vim.g.is_large_screen and 0.7 or nil,
+        -- Move the windows a bit to the right on large screens to prevent neck pain
+        col = vim.g.is_large_screen and 70 or nil,
+      },
       lazygit = {
         enabled = true,
         config = {
