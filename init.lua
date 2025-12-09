@@ -80,8 +80,8 @@ if vim.g.is_angular_project then
   vim.opt.iskeyword:append '$'
 end
 
--- 4k display
-vim.g.is_large_screen = vim.o.columns >= 300
+-- 4k or 1440p display
+vim.g.is_large_screen = vim.o.columns >= 284
 
 vim.g.is_work_project = vim.fn.getcwd():find '/work/' ~= nil
 
