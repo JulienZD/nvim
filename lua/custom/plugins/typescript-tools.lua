@@ -81,12 +81,7 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
 })
 
 return {
-  -- FIXME: Replace with 'pmizio/typescript-tools.nvim' when the following PR is merged:
-  -- https://github.com/pmizio/typescript-tools.nvim/pull/366
-  'Yuki-bun/typescript-tools.nvim',
-  branch = 'refac-use_native_lsp_api',
-  commit = '61e2b0857d75ff62941e7b38cc202f483f76c0ee',
-  pin = true,
+  'pmizio/typescript-tools.nvim',
   dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
   opts = {
     settings = {
