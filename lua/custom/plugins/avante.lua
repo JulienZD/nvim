@@ -14,7 +14,7 @@ return {
     mappings = {
       focus = '<leader>aF',
     },
-    provider = 'copilot',
+    provider = vim.g.ai_completions_provider,
     instructions_file = '.github/copilot_instructions.md',
     input = {
       provider = 'snacks',
@@ -22,6 +22,13 @@ return {
         -- Additional snacks.input options
         title = 'Avante Input',
         icon = ' ',
+      },
+    },
+    acp_providers = {
+      ['augment'] = {
+        enabled = true,
+        command = 'auggie',
+        args = { '--acp' },
       },
     },
   },
