@@ -187,6 +187,17 @@ vim.api.nvim_create_user_command('MochaToVitest', function()
   require('util.mocha-to-vitest').mocha_to_vitest()
 end, { desc = 'Convert Mocha tests to Vitest' })
 
+vim.api.nvim_create_user_command('CleanConsoleLogs', function()
+  local cursor_pos = vim.api.nvim_win_get_cursor(0)
+
+  vim.cmd [[g/console.*/normal! ^f(V%d]]
+  require('conform').format { async = true }
+
+  pcall(vim.api.nvim_win_set_cursor, 0, cursor_pos)
+end, { desc = 'Remove all debug logs' })
+
+vim.keymap.set('n', '<leader>cL', ':CleanConsoleLogs<CR>', { desc = '[C]lean all console [L]ogs' })
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
