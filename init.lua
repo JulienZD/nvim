@@ -617,6 +617,23 @@ require('lazy').setup({
           },
         },
 
+        angularls = {
+          filetypes = { 'typescript', 'html', 'htmlangular' },
+          on_attach = function(client, _bufnr)
+            if not vim.g.is_angular_project then
+              return
+            end
+
+            --HACK: We need to disable the renaming capability of either typescript (if available) or Angular to prevent
+            -- duplicate rename prompts
+            local typescript_client = vim.lsp.get_clients({ name = 'typescript-tools' })[1]
+
+            local client_to_modify = typescript_client or client
+
+            client_to_modify.server_capabilities.renameProvider = false
+          end,
+        },
+
         -- Note: For some reason the example lint plugin with eslint_d doesn't work, so I have to use eslint :(
         -- Requires `vscode-langservers-extracted` to be installed globally with npm / pnpm
         -- TODO: Maybe extract to separate file
@@ -970,28 +987,20 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    config = function()
+      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+
+      require('nvim-treesitter').install(filetypes)
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = filetypes,
+        callback = function()
+          vim.treesitter.start()
+        end,
+      })
+    end,
   },
 
   -- require 'kickstart.plugins.debug',
@@ -1080,35 +1089,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<C-j>', ':<C-U>TmuxNavigateDown<CR>', { silent = true })
       vim.keymap.set('n', '<C-k>', ':<C-U>TmuxNavigateUp<CR>', { silent = true })
       vim.keymap.set('n', '<C-l>', ':<C-U>TmuxNavigateRight<CR>', { silent = true })
-    end,
-  },
-  {
-    'dlvandenberg/tree-sitter-angular',
-    config = function()
-      vim.filetype.add {
-        pattern = {
-          ['.*%.component%.html'] = 'htmlangular',
-        },
-      }
-
-      vim.cmd 'runtime! ftplugin/html.vim!'
-
-      vim.lsp.config('angularls', {
-        filetypes = { 'typescript', 'html', 'typescriptreact', 'typescript.tsx', 'htmlangular' },
-        on_attach = function(client, _bufnr)
-          if not vim.g.is_angular_project then
-            return
-          end
-
-          --HACK: We need to disable the renaming capability of either typescript (if available) or Angular to prevent
-          -- duplicate rename prompts
-          local typescript_client = vim.lsp.get_clients({ name = 'typescript-tools' })[1]
-
-          local client_to_modify = typescript_client or client
-
-          client_to_modify.server_capabilities.renameProvider = false
-        end,
-      })
     end,
   },
   {
