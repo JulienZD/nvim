@@ -987,17 +987,40 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    lazy = false,
     build = ':TSUpdate',
-    config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+    -- Note: using `config` doesn't work, it doesn't ever run for some reason
+    init = function()
+      local filetypes = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'typescript',
+        'javascript',
+        'json',
+        'query',
+        'vim',
+        'vimdoc',
+      }
 
-      require('nvim-treesitter').install(filetypes)
-
+      -- Set up autocommand for future buffers
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
         callback = function()
           vim.treesitter.start()
+        end,
+      })
+
+      -- Install parsers after plugin loads
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'VeryLazy',
+        once = true,
+        callback = function()
+          require('nvim-treesitter').install(filetypes)
         end,
       })
     end,
