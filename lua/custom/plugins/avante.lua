@@ -5,6 +5,7 @@ vim.opt.laststatus = 3
 
 return {
   'yetone/avante.nvim',
+  cond = false, -- disable for now, as I rarely use it
   build = 'make',
   event = 'VeryLazy',
   version = false, -- Never set this value to "*"! Never!
