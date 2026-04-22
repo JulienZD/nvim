@@ -1,3 +1,5 @@
+local use_typescript_tools = not vim.g.tsgo_enabled
+
 -- Improve the provided code actions, since the default ones include some that are not useful
 -- and don't sort correctly in combination with other LSPs (e.g. eslint)
 vim.api.nvim_create_autocmd({ 'FileType' }, {
@@ -6,6 +8,10 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
   desc = 'Improve TypeScript code actions',
   pattern = { 'typescript', 'typescriptreact', 'typescript.tsx', 'javascript', 'javascriptreact', 'javascript.jsx' },
   callback = function()
+    if not use_typescript_tools then
+      return
+    end
+
     local original_select = vim.ui.select
 
     local actions_to_sort_first = {
@@ -83,6 +89,7 @@ vim.api.nvim_create_autocmd({ 'FileType' }, {
 return {
   'pmizio/typescript-tools.nvim',
   dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+  cond = use_typescript_tools,
   opts = {
     settings = {
       tsserver_file_preferences = {

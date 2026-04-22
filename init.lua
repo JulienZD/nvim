@@ -74,6 +74,7 @@ vim.o.cursorline = true
 vim.o.scrolloff = 10
 
 vim.g.is_angular_project = vim.fn.filereadable './angular.json' == 1
+vim.g.tsgo_enabled = require('util.ts-lsp-picker').uses_tsgo()
 
 if vim.g.is_angular_project then
   -- Include $ as part of words, so they're included when renaming (Angular/RxJS uses this a lot)
@@ -609,6 +610,10 @@ require('lazy').setup({
           },
         },
 
+        tsgo = {
+          enabled = not vim.g.is_angular_project and vim.g.tsgo_enabled, -- Disable tsgo in Angular projects, because Angular doesn't support tsgo yet
+        },
+
         tailwindcss = {
           flags = {
             -- Some overwrites to circumvent lsp lag
@@ -813,6 +818,9 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Only enable tsgo if we actually use it
+      vim.lsp.enable('tsgo', vim.g.tsgo_enabled)
     end,
   },
 
