@@ -86,6 +86,10 @@ vim.g.is_large_screen = vim.o.columns >= 284
 
 vim.g.is_work_project = vim.fn.getcwd():find '/work/' ~= nil
 
+vim.g.is_oxfmt_project = vim.fn.filereadable(vim.fn.getcwd() .. '/.oxfmtrc.json') == 1
+  or vim.fn.filereadable(vim.fn.getcwd() .. '/.oxfmtrc.jsonc') == 1
+  or vim.fn.filereadable(vim.fn.getcwd() .. '/oxfmt.config.ts') == 1
+
 ---@alias AIProvider 'copilot' | 'augment'
 ---@type AIProvider
 vim.g.ai_completions_provider = vim.g.is_work_project and 'augment' or 'copilot'
@@ -639,6 +643,9 @@ require('lazy').setup({
           end,
         },
 
+        oxlint = {},
+        oxfmt = {},
+
         -- Note: For some reason the example lint plugin with eslint_d doesn't work, so I have to use eslint :(
         -- Requires `vscode-langservers-extracted` to be installed globally with npm / pnpm
         -- TODO: Maybe extract to separate file
@@ -821,6 +828,9 @@ require('lazy').setup({
 
       -- Only enable tsgo if we actually use it
       vim.lsp.enable('tsgo', vim.g.tsgo_enabled)
+
+      -- Only enable oxfmt if we actually use it
+      vim.lsp.enable('oxfmt', vim.g.is_oxfmt_project)
     end,
   },
 
@@ -845,6 +855,9 @@ require('lazy').setup({
           require_cwd = true,
           args = { 'check', '--fix', '--stdin-file-path', '$FILENAME' },
         },
+        oxfmt = {
+          require_cwd = true,
+        },
       },
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
@@ -868,15 +881,15 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
-        javascriptreact = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
-        typescriptreact = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
-        tsx = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
-        html = { 'prettierd', 'prettier', stop_after_first = true },
+        javascript = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        typescript = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        typescriptreact = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        tsx = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        html = { 'oxfmt', 'prettierd', 'prettier', stop_after_first = true },
         htmlangular = { 'prettierd', 'prettier', stop_after_first = true },
         scss = { 'prettierd', 'prettier', stop_after_first = true },
-        css = { 'biome', 'prettierd', 'prettier', stop_after_first = true },
+        css = { 'oxfmt', 'biome', 'prettierd', 'prettier', stop_after_first = true },
 
         php = { 'pint' },
         blade = { 'blade-formatter' },
