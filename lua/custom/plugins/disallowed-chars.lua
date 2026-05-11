@@ -33,6 +33,11 @@ local disallowed = {
   { code = 0x27F5, replacement = '<--' }, -- long left arrow ⟵
   { code = 0x27F7, replacement = '<-->' }, -- long left-right arrow ⟷
 
+  -- Comparison operators
+  { code = 0x2260, replacement = '!=' }, -- not equal to ≠
+  { code = 0x2264, replacement = '<=' }, -- less-than or equal to ≤
+  { code = 0x2265, replacement = '>=' }, -- greater-than or equal to ≥
+
   -- Invisible whitespace (replaced with regular space or removed)
   { code = 0x00A0, replacement = ' ' }, -- non-breaking space
   { code = 0x2002, replacement = ' ' }, -- en space
